@@ -40,6 +40,7 @@ user
 | number | char | char |
 
 post
+
 | id | title | detail | date | owner |
 | :-: | :-: | :-: | :-: | :-: |
 | number | varchar | text | datetime | number |
