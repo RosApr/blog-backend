@@ -38,6 +38,7 @@ user
 | id | name | pwd |
 | :-: | :-: | :-: |
 | number | char | char |
+
 post
 | id | title | detail | date | owner |
 | :-: | :-: | :-: | :-: | :-: |
