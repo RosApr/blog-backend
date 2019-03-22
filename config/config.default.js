@@ -21,6 +21,11 @@ module.exports = appInfo => {
       },
       app: true,
       agent: false
+    },
+    cluster: {
+      listen: {
+        port: 3000,
+      }
     }
   };
 
