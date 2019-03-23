@@ -26,6 +26,11 @@ module.exports = appInfo => {
       listen: {
         port: 3000,
       }
+    },
+    security: {
+      csrf: {
+        enable: false,
+      }
     }
   };
 

@@ -1,13 +1,20 @@
 const Service = require('egg').Service
 class PostService extends Service {
     async queryPostList({size, page}) {
-
-        const _sql = `
+        const { app } = this
+        const itemsSql = `
             SELECT * FROM post LIMIT ${size} OFFSET ${size * (page - 1)};
         `
-        const post = await this.app.mysql.query(_sql);
-        console.log(post)
-        return post
+        const totalSql = `
+            SELECT COUNT(*) as total FROM post;
+        `
+        const items = await app.mysql.query(itemsSql);
+        const total = await app.mysql.query(totalSql);
+        const result = {
+            items: JSON.parse(JSON.stringify(items)),
+            total: total[0].total
+        }
+        return result
     }
 }
 module.exports = PostService
