@@ -22,6 +22,12 @@ module.exports = appInfo => {
       app: true,
       agent: false
     },
+    session: {
+      key: 'user',
+      maxAge: .5 * 3600 * 1000, // 半小时
+      httpOnly: true,
+      encrypt: true
+    },
     cluster: {
       listen: {
         port: 3000,
@@ -38,8 +44,14 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1553065144061_4784';
 
   // add your middleware config here
-  config.middleware = [];
-
+  config.middleware = ['storeAuth', 'formatResponse'];
+  config.storeAuth = {
+    match: [
+      '/api/login',
+      '/api/logout',
+      '/api/register'
+    ]
+  }
   // add your user config here
   const userConfig = {
     // myAppName: 'egg',

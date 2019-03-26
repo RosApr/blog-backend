@@ -13,9 +13,14 @@ class LoginService extends Service {
         const res = await app.mysql.query(sql)
         if(res[0]) {
             delete res[0]['pwd']
-            return res[0]
+            return {
+                ...res[0],
+                msg: ''
+            }
         }
-        return 401
+        return {
+            msg: 'error'
+        }
     }
     async regiser(registerConfig = { username: '', password: ''}) {
         const { app } = this
@@ -30,9 +35,14 @@ class LoginService extends Service {
         const isUserNameExisted = await app.mysql.query(isUserNameUniqueSql)
         if(!isUserNameExisted[0]) {
             let res = await app.mysql.query(insertNewUserSql)
-            return res[0]
+            return {
+                ...res[0],
+                msg: ''
+            }
         }
-        return 401
+        return {
+            msg: 'error'
+        }
     }
 }
 

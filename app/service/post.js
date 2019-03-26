@@ -14,7 +14,10 @@ class PostService extends Service {
             items: JSON.parse(JSON.stringify(items)),
             total: total[0].total
         }
-        return result
+        return {
+            ...result,
+            msg: ''
+        }
     }
     async publishPost() {}
 }
