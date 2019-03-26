@@ -8,6 +8,12 @@ class ListController extends Controller {
     const postList = await service.post.queryPostList(listConfig)
     ctx.body = postList
   }
+  async publishPost() {
+    const { ctx, service, ctx: { request: { body: postDetail }}} = this
+    console.log(postDetail)
+    
+    ctx.body = 200
+  }
 }
 
 module.exports = ListController;

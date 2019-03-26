@@ -16,5 +16,6 @@ class PostService extends Service {
         }
         return result
     }
+    async publishPost() {}
 }
 module.exports = PostService

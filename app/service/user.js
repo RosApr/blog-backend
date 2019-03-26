@@ -8,10 +8,14 @@ class LoginService extends Service {
         hash.update(loginConfig.password)
         const needExecPwd = hash.digest('hex')
         const sql = `
-            SELECT name, pwd FROM user WHERE name = '${loginConfig.username}' AND pwd = '${needExecPwd}';
+            SELECT id, name, pwd FROM user WHERE name = '${loginConfig.username}' AND pwd = '${needExecPwd}';
         `
         const res = await app.mysql.query(sql)
-        return 200
+        if(res[0]) {
+            delete res[0]['pwd']
+            return res[0]
+        }
+        return 401
     }
     async regiser(registerConfig = { username: '', password: ''}) {
         const { app } = this
@@ -26,7 +30,7 @@ class LoginService extends Service {
         const isUserNameExisted = await app.mysql.query(isUserNameUniqueSql)
         if(!isUserNameExisted[0]) {
             let res = await app.mysql.query(insertNewUserSql)
-            return 200
+            return res[0]
         }
         return 401
     }
