@@ -10,9 +10,15 @@ class ListController extends Controller {
   }
   async publishPost() {
     const { ctx, service, ctx: { request: { body: postDetail }}} = this
-    console.log(postDetail)
-    
-    ctx.body = 200
+    const token = ctx.cookies.get('token', { signed: false })
+    const validateData = ctx.helper.validateToken(token)
+    if(!validateData.status) {
+      return ctx.body = {
+        msg: 'error'
+      }
+    }
+    const publishRes = await service.post.publishPost({...postDetail, ...validateData.data})
+    ctx.body = publishRes
   }
 }
 

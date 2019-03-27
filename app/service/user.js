@@ -1,6 +1,6 @@
 const Service = require('egg').Service
 const crypto = require('crypto')
-
+// demo - test - yang - xiao - gang - rosapr - jin
 class LoginService extends Service {
     async validateLogin(loginConfig = { username: '', password: ''}) {
         const { app } = this
@@ -36,7 +36,10 @@ class LoginService extends Service {
         if(!isUserNameExisted[0]) {
             let res = await app.mysql.query(insertNewUserSql)
             return {
-                ...res[0],
+                ...{
+                    id: res.insertId,
+                    name: registerConfig.username
+                },
                 msg: ''
             }
         }

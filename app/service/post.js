@@ -19,6 +19,17 @@ class PostService extends Service {
             msg: ''
         }
     }
-    async publishPost() {}
+    async publishPost(publishData) {
+        console.log(publishData)
+        const { app } = this
+        const insertPostSql = `
+            INSERT INTO post(title, detail, date, owner_id) VALUES('${publishData.title}','${publishData.content}',curdate(),'${publishData.id}');
+        `
+        const res = await app.mysql.query(insertPostSql)
+        console.log(res)
+        return {
+            msg: ''
+        }
+    }
 }
 module.exports = PostService
