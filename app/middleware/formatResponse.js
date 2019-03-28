@@ -6,13 +6,14 @@ module.exports = options => {
         if(Object.keys(data).length === 0) {
             data = ''
         }
-        if(msg != '') {
-            ctx.status = 401
-        } else {
-            ctx.body = {
-                data,
-                msg
-            }
+        // if(msg != '') {
+        //     ctx.status = 401
+        // } else {
+            
+        // }
+        ctx.body = {
+            data,
+            msg
         }
         return
     }

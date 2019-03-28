@@ -20,14 +20,24 @@ class PostService extends Service {
         }
     }
     async publishPost(publishData) {
-        console.log(publishData)
         const { app } = this
         const insertPostSql = `
-            INSERT INTO post(title, detail, date, owner_id) VALUES('${publishData.title}','${publishData.content}',curdate(),'${publishData.id}');
+            INSERT INTO post(title, detail, date, owner_id)
+             VALUES('${publishData.title}','${publishData.content}',curdate(),'${publishData.id}');
         `
         const res = await app.mysql.query(insertPostSql)
-        console.log(res)
         return {
+            msg: ''
+        }
+    }
+    async queryDetail(postId = '') {
+        const { app } = this
+        const queryPostDetailSql = `
+            SELECT title, detail, date, (SELECT name FROM user WHERE post.id = ${postId}) as name from post WHERE post.id = ${ postId};
+        `
+        const res = await app.mysql.query(queryPostDetailSql)
+        return {
+            ...res[0],
             msg: ''
         }
     }

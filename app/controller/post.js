@@ -20,6 +20,11 @@ class ListController extends Controller {
     const publishRes = await service.post.publishPost({...postDetail, ...validateData.data})
     ctx.body = publishRes
   }
+  async detail() {
+    const { ctx, service, ctx: { params:{ id } } } = this
+    const postDetail = await service.post.queryDetail(id) 
+    ctx.body = postDetail
+  }
 }
 
 module.exports = ListController;
