@@ -33,8 +33,9 @@ class PostService extends Service {
     async queryDetail(postId = '') {
         const { app } = this
         const queryPostDetailSql = `
-            SELECT title, detail, date, (SELECT name FROM user WHERE post.id = ${postId}) as name from post WHERE post.id = ${ postId};
+            SELECT post.title, post.detail, post.date user.name FROM post LEFT JOIN user ON user.id = post.owner_id WHERE post.id = ${postId};
         `
+        //SELECT title, detail, date, (SELECT name FROM user WHERE post.id = ${postId}) as name from post WHERE post.id = ${ postId};
         const res = await app.mysql.query(queryPostDetailSql)
         return {
             ...res[0],
