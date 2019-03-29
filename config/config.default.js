@@ -44,6 +44,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1553065144061_4784';
 
   // add your middleware config here
+  // 中间件执行顺序为数据逆序，既 formatResponse 先于 auth执行
   config.middleware = ['auth', 'formatResponse'];
   config.auth = {
     match: [
