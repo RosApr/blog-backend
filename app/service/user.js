@@ -1,14 +1,10 @@
 const Service = require('egg').Service
-const crypto = require('crypto')
-// demo - test - yang - xiao - gang - rosapr - jin
 class LoginService extends Service {
-    async validateLogin(loginConfig = { account: '', password: ''}) {
+    async login(loginConfig = { account: '', password: ''}) {
         const { app } = this
-        const hash = crypto.createHash('sha1')
-        hash.update(loginConfig.password)
-        const needExecPwd = hash.digest('hex')
+        const _password = app.translatePwdBySha1(password)
         const sql = `
-            SELECT id, account, nickname, pwd FROM user WHERE account = '${loginConfig.account}' AND pwd = '${needExecPwd}';
+            SELECT id, account, nickname, pwd FROM user WHERE account = '${loginConfig.account}' AND pwd = '${_password}';
         `
         const res = await app.mysql.query(sql)
         if(res[0]) {
@@ -22,15 +18,14 @@ class LoginService extends Service {
             msg: 'error'
         }
     }
-    async regiser(registerConfig = { username: '', password: ''}) {
+    async register(registerConfig = { username: '', password: ''}) {
         const { app } = this
-        const hash = crypto.createHash('sha1')
-        hash.update(registerConfig.password)
+        const _password = app.translatePwdBySha1(password)
         const isUserNameUniqueSql = `
             SELECT name FROM user WHERE name = '${registerConfig.username}'
         `
         const insertNewUserSql = `
-            INSERT INTO user(name, pwd) VALUES('${registerConfig.username}', '${hash.digest("hex")}')
+            INSERT INTO user(name, pwd) VALUES('${registerConfig.username}', '${_password}')
         `
         const isUserNameExisted = await app.mysql.query(isUserNameUniqueSql)
         if(!isUserNameExisted[0]) {

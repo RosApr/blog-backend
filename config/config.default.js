@@ -5,6 +5,7 @@
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
+const { path: apiPath  } = require('../app/config')
 module.exports = appInfo => {
   /**
    * built-in config
@@ -21,6 +22,9 @@ module.exports = appInfo => {
       },
       app: true,
       agent: false
+    },
+    jwt: {
+      secret: 123
     },
     // session: {
     //   key: 'user',
@@ -48,9 +52,9 @@ module.exports = appInfo => {
   config.middleware = ['auth', 'formatResponse'];
   config.auth = {
     match: [
-      '/api/user/login',
-      '/api/user/logout',
-      '/api/user/register'
+      `${apiPath.user}/login`,
+      `${apiPath.user}/logout`,
+      `${apiPath.user}/register`
     ]
   }
   // add your user config here

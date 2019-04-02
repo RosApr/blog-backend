@@ -1,21 +1,21 @@
 'use strict';
 
-const Controller = require('egg').Controller;
+const baseController = require('../core/base_controller');
 
-class Categories extends Controller {
-    async queryCategoriesList() {
-
-    }
-    async queryCategoriesInfo() {
+class Categories extends baseController {
+    async queryList() {
 
     }
-    async createCategories() {
+    async queryInfo() {
 
     }
-    async modifyCategoriesInfo() {
+    async create() {
 
     }
-    async delCategories() {
+    async modifyInfo() {
+
+    }
+    async del() {
 
     }
 }

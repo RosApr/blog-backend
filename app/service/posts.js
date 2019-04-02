@@ -1,6 +1,6 @@
 const Service = require('egg').Service
 class PostService extends Service {
-    async queryPostsList({size, page}) {
+    async queryList({size, page}) {
         const { app } = this
         const itemsSql = `
             SELECT * FROM post LIMIT ${size} OFFSET ${size * (page - 1)};
@@ -19,7 +19,7 @@ class PostService extends Service {
             msg: ''
         }
     }
-    async createPosts(postsData) {
+    async create(postsData) {
         const { app } = this
         const insertPostSql = `
             INSERT INTO post(title, detail, date, owner_id)
@@ -30,7 +30,7 @@ class PostService extends Service {
             msg: ''
         }
     }
-    async queryPostsInfo(postId = '') {
+    async queryInfo(postId = '') {
         const { app } = this
         const queryPostsInfoSql = `
             SELECT post.title, post.detail, post.date, user.name FROM post LEFT JOIN user ON user.id = post.owner_id WHERE post.id = ${postId};

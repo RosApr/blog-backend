@@ -3,28 +3,40 @@
 /**
  * @param {Egg.Application} app - egg application
  */
+
+const { path: apiPath } = require('./config')
+
 module.exports = app => {
   const { router, controller } = app;
   router.get('/', controller.home.index);
-  // 文章
-  router.get('/api/posts', controller.posts.queryPostsList);
-  router.get('/api/posts/:id', controller.posts.queryPostsInfo);
-  router.post('/api/posts', controller.posts.createPosts);
-  router.put('/api/posts/:id', controller.posts.modifyPostsInfo);
-  router.delete('/api/posts/:id', controller.posts.delPosts);
-  router.get('/api/posts/:id/pv', controller.posts.addPostsPv)
-  router.get('/api/posts/:id/star', controller.posts.addPostsStar)
-  // 搜索
-  router.get('/api/posts/search', controller.posts.search)
-  // 用户
-  router.post('/api/user/login', controller.user.login);
-  router.post('/api/user/logout', controller.user.logout);
-  router.post('/api/user/register', controller.user.register);
-  router.put('/api/user', controller.user.modifyUserInfo);
-  // 分类
-  router.get('/api/categories', controller.categories.queryCategoriesList)
-  router.get('/api/categories/:id', controller.categories.queryCategoriesInfo)
-  router.post('/api/categories', controller.categories.createCategories)
-  router.put('/api/categories/:id', controller.categories.modifyCategoriesInfo)
-  router.delete('/api/categories/:id', controller.categories.delCategories)
+  /**
+   * 文章
+   */
+  router.get(`${apiPath.posts}`, controller.posts.queryList);
+  router.get(`${apiPath.posts}/:id`, controller.posts.queryInfo);
+  router.post(`${apiPath.posts}`, controller.posts.create);
+  router.put(`${apiPath.posts}/:id`, controller.posts.modifyInfo);
+  router.delete(`${apiPath.posts}/:id`, controller.posts.del);
+  router.get(`${apiPath.posts}/:id/pv`, controller.posts.pv)
+  router.get(`${apiPath.posts}/:id/favorite`, controller.posts.favorite)
+  /**
+   * 搜索
+   */
+
+  router.get(`${apiPath.posts}/search`, controller.posts.search)
+  /**
+   * 用户
+   */
+  router.post(`${apiPath.user}/login`, controller.user.login);
+  router.post(`${apiPath.user}/logout`, controller.user.logout);
+  router.post(`${apiPath.user}/register`, controller.user.register);
+  router.put(`${apiPath.user}`, controller.user.modifyInfo);
+  /**
+   * 分类
+   */
+  router.get(`${apiPath.categories}`, controller.categories.queryList)
+  router.get(`${apiPath.categories}/:id`, controller.categories.queryInfo)
+  router.post(`${apiPath.categories}`, controller.categories.create)
+  router.put(`${apiPath.categories}/:id`, controller.categories.modifyInfo)
+  router.delete(`${apiPath.categories}/:id`, controller.categories.del)
 };

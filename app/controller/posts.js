@@ -1,45 +1,44 @@
 'use strict';
 
-const Controller = require('egg').Controller;
+const baseController = require('../core/base_controller');
 
-class ListController extends Controller {
-  async queryPostsList() {
+class PostsController extends baseController {
+  async queryList() {
     const { ctx, service, ctx: { query: listConfig} } = this;
-    const postList = await service.posts.queryPostsList(listConfig)
+    const postList = await service.posts.queryList(listConfig)
     ctx.body = postList
   }
-  async createPosts() {
+  async create() {
     const { ctx, service, ctx: { request: { body: postDetail }}} = this
-    const token = ctx.cookies.get('token', { signed: false })
-    const validateData = ctx.helper.validateToken(token)
+    const validateData = ctx.verifyToken()
     if(!validateData.status) {
       return ctx.body = {
         msg: 'error'
       }
     }
-    const publishRes = await service.posts.createPosts({...postDetail, ...validateData.data})
+    const publishRes = await service.posts.create({...postDetail, ...validateData.data})
     ctx.body = publishRes
   }
-  async queryPostsInfo() {
+  async queryInfo() {
     const { ctx, service, ctx: { params:{ id } } } = this
-    const postsInfo = await service.posts.queryPostsInfo(id) 
+    const postsInfo = await service.posts.queryInfo(id) 
     ctx.body = postsInfo
   }
   async search() {
     
   }
-  async modifyPostsInfo() {
+  async modifyInfo() {
 
   }
-  async delPosts() {
+  async del() {
 
   }
-  async addPostsPv() {
+  async pv() {
 
   }
-  async addPostsStar() {
+  async favorite() {
 
   }
 }
 
-module.exports = ListController;
+module.exports = PostsController;

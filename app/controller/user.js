@@ -1,11 +1,11 @@
 'use strict';
 
-const Controller = require('egg').Controller
+const baseController = require('../core/base_controller');
 
-class LoginController extends Controller {
+class LoginController extends baseController {
     async login() {
         const { ctx, service } = this
-        const res = await service.user.validateLogin(ctx.request.body)
+        const res = await service.user.login(ctx.request.body)
         ctx.body = res
     }
     async register() {
@@ -19,7 +19,7 @@ class LoginController extends Controller {
             msg: ''
         }
     }
-    async modifyUserInfo() {
+    async modifyInfo() {
         const { ctx } = this
         ctx.body = {
             msg: ''
