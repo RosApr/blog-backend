@@ -1,6 +1,6 @@
 const Service = require('egg').Service
 class PostService extends Service {
-    async queryPostList({size, page}) {
+    async queryPostsList({size, page}) {
         const { app } = this
         const itemsSql = `
             SELECT * FROM post LIMIT ${size} OFFSET ${size * (page - 1)};
@@ -19,24 +19,24 @@ class PostService extends Service {
             msg: ''
         }
     }
-    async publishPost(publishData) {
+    async createPosts(postsData) {
         const { app } = this
         const insertPostSql = `
             INSERT INTO post(title, detail, date, owner_id)
-             VALUES('${publishData.title}','${publishData.content}',curdate(),'${publishData.id}');
+             VALUES('${postsData.title}','${postsData.content}',curdate(),'${postsData.id}');
         `
         const res = await app.mysql.query(insertPostSql)
         return {
             msg: ''
         }
     }
-    async queryDetail(postId = '') {
+    async queryPostsInfo(postId = '') {
         const { app } = this
-        const queryPostDetailSql = `
+        const queryPostsInfoSql = `
             SELECT post.title, post.detail, post.date, user.name FROM post LEFT JOIN user ON user.id = post.owner_id WHERE post.id = ${postId};
         `
         //SELECT title, detail, date, (SELECT name FROM user WHERE post.id = ${postId}) as name from post WHERE post.id = ${ postId};
-        const res = await app.mysql.query(queryPostDetailSql)
+        const res = await app.mysql.query(queryPostsInfoSql)
         return {
             ...res[0],
             msg: ''

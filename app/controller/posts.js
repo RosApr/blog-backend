@@ -3,12 +3,12 @@
 const Controller = require('egg').Controller;
 
 class ListController extends Controller {
-  async index() {
+  async queryPostsList() {
     const { ctx, service, ctx: { query: listConfig} } = this;
-    const postList = await service.post.queryPostList(listConfig)
+    const postList = await service.posts.queryPostsList(listConfig)
     ctx.body = postList
   }
-  async publishPost() {
+  async createPosts() {
     const { ctx, service, ctx: { request: { body: postDetail }}} = this
     const token = ctx.cookies.get('token', { signed: false })
     const validateData = ctx.helper.validateToken(token)
@@ -17,13 +17,28 @@ class ListController extends Controller {
         msg: 'error'
       }
     }
-    const publishRes = await service.post.publishPost({...postDetail, ...validateData.data})
+    const publishRes = await service.posts.createPosts({...postDetail, ...validateData.data})
     ctx.body = publishRes
   }
-  async detail() {
+  async queryPostsInfo() {
     const { ctx, service, ctx: { params:{ id } } } = this
-    const postDetail = await service.post.queryDetail(id) 
-    ctx.body = postDetail
+    const postsInfo = await service.posts.queryPostsInfo(id) 
+    ctx.body = postsInfo
+  }
+  async search() {
+    
+  }
+  async modifyPostsInfo() {
+
+  }
+  async delPosts() {
+
+  }
+  async addPostsPv() {
+
+  }
+  async addPostsStar() {
+
   }
 }
 

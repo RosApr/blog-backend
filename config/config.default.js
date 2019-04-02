@@ -48,9 +48,9 @@ module.exports = appInfo => {
   config.middleware = ['auth', 'formatResponse'];
   config.auth = {
     match: [
-      '/api/login',
-      '/api/logout',
-      '/api/register'
+      '/api/user/login',
+      '/api/user/logout',
+      '/api/user/register'
     ]
   }
   // add your user config here

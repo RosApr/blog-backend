@@ -19,6 +19,12 @@ class LoginController extends Controller {
             msg: ''
         }
     }
+    async modifyUserInfo() {
+        const { ctx } = this
+        ctx.body = {
+            msg: ''
+        }
+    }
 }
 
 module.exports = LoginController

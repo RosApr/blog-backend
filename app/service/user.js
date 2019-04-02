@@ -2,13 +2,13 @@ const Service = require('egg').Service
 const crypto = require('crypto')
 // demo - test - yang - xiao - gang - rosapr - jin
 class LoginService extends Service {
-    async validateLogin(loginConfig = { username: '', password: ''}) {
+    async validateLogin(loginConfig = { account: '', password: ''}) {
         const { app } = this
         const hash = crypto.createHash('sha1')
         hash.update(loginConfig.password)
         const needExecPwd = hash.digest('hex')
         const sql = `
-            SELECT id, name, pwd FROM user WHERE name = '${loginConfig.username}' AND pwd = '${needExecPwd}';
+            SELECT id, account, nickname, pwd FROM user WHERE account = '${loginConfig.account}' AND pwd = '${needExecPwd}';
         `
         const res = await app.mysql.query(sql)
         if(res[0]) {
