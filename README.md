@@ -103,3 +103,7 @@ comment
 需要权限验证的接口
 
 不需要权限验证的接口
+
+### egg
+
+中间件执行顺序： global middleware -> router mapping -> router middleware -> controller

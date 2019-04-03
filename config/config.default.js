@@ -5,7 +5,6 @@
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
-const { path: apiPath  } = require('../app/config')
 module.exports = appInfo => {
   /**
    * built-in config
@@ -46,16 +45,35 @@ module.exports = appInfo => {
 
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1553065144061_4784';
-
+  // global api path
+  config.apiPath = {
+    posts: '/api/posts',
+    user: '/api/user',
+    categories: '/api/categories'
+  }
   // add your middleware config here
-  // 中间件执行顺序为数据逆序，既 formatResponse 先于 auth执行
+  // 中间件执行顺序为数组逆序，既 formatResponse 先于 auth执行
   config.middleware = ['auth', 'formatResponse'];
   config.auth = {
-    match: [
-      `${apiPath.user}/login`,
-      `${apiPath.user}/logout`,
-      `${apiPath.user}/register`
-    ]
+    roleConfig: {
+      [config.ROLE.root]: [
+        {
+          path: '',
+          type: ''
+        }
+      ],
+      [config.ROLE.user]: [
+
+      ],
+      [config.ROLE.anoymous]: [
+
+      ]
+    }
+  }    
+  config.ROLE = {
+    root: 'root',
+    user: 'user',
+    anoymous: 'anoymous'
   }
   // add your user config here
   const userConfig = {

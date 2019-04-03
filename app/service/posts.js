@@ -1,6 +1,6 @@
 const Service = require('egg').Service
 class PostService extends Service {
-    async queryList({size, page}) {
+    async queryList({size, page} = {}) {
         const { app } = this
         const itemsSql = `
             SELECT * FROM post LIMIT ${size} OFFSET ${size * (page - 1)};
