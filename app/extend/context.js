@@ -1,3 +1,5 @@
+// const pathToRegexp = require('path-to-regexp')
+
 module.exports = {
     get token() {
         return this.cookie.get('token', { signed: false })
@@ -13,6 +15,14 @@ module.exports = {
             overwrite: true
         })
     },
+    isUserHasCurrRouteAuth(currRouteRoleArray = []) {
+        const currUserRole = this.verifyToken()['role']
+        return currRouteRoleArray.includes(currUserRole)
+    },
+    currRouteAuth(currRouteName = '') {
+        const { app: { config: {auth: { pathsConfig }}}} = this
+        return pathsConfig.filter(pathConfig => pathConfig.name === currRouteName)[0]['role']
+    },
     delToken() {
         return this.cookies.set('token', null, { signed: false })
     },
@@ -22,11 +32,12 @@ module.exports = {
             let data = app.jwt.verify(this.token, app.config.jwt.secret)
             return {
                 status: true,
-                data
+                ...data.role
             }
-        } catch (e) {
+        } catch (err) {
             return {
-                status: false
+                status: false,
+                role: app.config.ROLE.anonymous
             }
         }
     }

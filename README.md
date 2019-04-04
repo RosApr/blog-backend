@@ -83,7 +83,7 @@ comment
 - 登录         -no auth
 - 注册         -no auth
 - 修改用户信息
-- 发布文章
+- 发布文章
 - 获取文章列表  -no auth
 - 查看文章详情  -no auth
 - 获取类目列表  -no auth

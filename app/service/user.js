@@ -4,7 +4,7 @@ class LoginService extends Service {
         const { app } = this
         const _password = app.translatePwdBySha1(password)
         const sql = `
-            SELECT id, account, nickname, pwd FROM user WHERE account = '${account}' AND pwd = '${_password}';
+            SELECT id, account, nickname, role, pwd FROM user WHERE account = '${account}' AND pwd = '${_password}';
         `
         const res = await app.mysql.query(sql)
         if(res[0]) {
@@ -15,7 +15,7 @@ class LoginService extends Service {
             }
         }
         return {
-            msg: 'error'
+            msg: '账号或密码错误'
         }
     }
     async register({account, password, nickname}) {

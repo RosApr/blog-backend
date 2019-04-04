@@ -6,12 +6,18 @@ class LoginController extends baseController {
     async login() {
         const { ctx, service } = this
         const rule = {
-            account: 'string',
+            account: {
+                type: 'string',
+                required: true
+            },
             password: 'password'
         }
-        ctx.validate(rule)
-        const res = await service.user.login(ctx.request.body)
-        ctx.body = res
+        const {msg, ...data} = await service.user.login(ctx.request.body)
+        if(!msg) {
+            ctx.createToken(data)
+            return this.success(200, {...data, msg})
+        }         
+        this.success(400, {...data, msg})
     }
     async register() {
         const { ctx, service } = this
@@ -23,19 +29,14 @@ class LoginController extends baseController {
         ctx.validate(rule)
         const res = await service.user.register(ctx.request.body)
         this.success()
-        ctx.body = res
     }
     async logout() {
         const { ctx } = this
-        ctx.body = {
-            msg: ''
-        }
+        
     }
     async modifyInfo() {
         const { ctx } = this
-        ctx.body = {
-            msg: ''
-        }
+        
     }
 }
 

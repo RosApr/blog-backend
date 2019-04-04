@@ -1,17 +1,14 @@
 module.exports = options => {
     return async function auth(ctx, next) {
-        console.log('auth')
+        const currRouteAuth = ctx.currRouteAuth(ctx._matchedRouteName)
+        const isUserHasCurrRouteAuth = ctx.isUserHasCurrRouteAuth(currRouteAuth)
+        if(!isUserHasCurrRouteAuth) {
+            ctx.body = {
+                msg: ''
+            }
+            ctx.status = 401
+        }
         await next();
-
-        const { body, request: { url }, app: { config: { apiPath }} } = ctx
-        if(body.msg != '') {
-            return
-        }
-        if(url === `${apiPath}/logout`) {
-            ctx.delToken()
-        } else {
-            ctx.createToken(body.data)
-        }
         return 
     }
 }

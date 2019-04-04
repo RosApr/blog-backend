@@ -11,7 +11,7 @@
  Target Server Version : 50710
  File Encoding         : utf-8
 
- Date: 04/03/2019 18:33:50 PM
+ Date: 04/04/2019 18:00:54 PM
 */
 
 SET NAMES utf8;
@@ -60,9 +60,9 @@ CREATE TABLE `post` (
   `title` varchar(100) COLLATE utf8_bin NOT NULL,
   `date` datetime DEFAULT NULL,
   `owner_id` int(11) NOT NULL,
-  `pv` int(11) NOT NULL,
-  `category` int(11) NOT NULL,
   `content` text COLLATE utf8_bin NOT NULL,
+  `pv` int(11) NOT NULL DEFAULT '0',
+  `category` varchar(20) COLLATE utf8_bin NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -78,5 +78,12 @@ CREATE TABLE `user` (
   `role` varchar(20) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+--  Records of `user`
+-- ----------------------------
+BEGIN;
+INSERT INTO `user` VALUES ('16', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', '871128', 'demo', 'user');
+COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

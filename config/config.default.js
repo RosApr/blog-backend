@@ -23,7 +23,7 @@ module.exports = appInfo => {
       agent: false
     },
     jwt: {
-      secret: 123
+      secret: '123'
     },
     // session: {
     //   key: 'user',
@@ -52,28 +52,143 @@ module.exports = appInfo => {
     categories: '/api/categories'
   }
   // add your middleware config here
-  // 中间件执行顺序为数组逆序，既 formatResponse 先于 auth执行
-  config.middleware = ['auth', 'formatResponse'];
-  config.auth = {
-    roleConfig: {
-      [config.ROLE.root]: [
-        {
-          path: '',
-          type: ''
-        }
-      ],
-      [config.ROLE.user]: [
-
-      ],
-      [config.ROLE.anoymous]: [
-
-      ]
-    }
-  }    
+  config.middleware = ['formatResponse'];
   config.ROLE = {
     root: 'root',
     user: 'user',
-    anoymous: 'anoymous'
+    anonymous: 'anonymous'
+  }
+  config.auth = {
+    pathsConfig: [
+      /**
+       * 文章
+       */
+      {
+        match: `${config.apiPath.posts}`,
+        type: 'get',
+        name: 'posts.queryList',
+        role: [config.ROLE.root, config.ROLE.user, config.ROLE.anonymous],
+        controller: 'posts.queryList'
+      },
+      {
+        match: `${config.apiPath.posts}/:id`,
+        type: 'get',
+        name: 'posts.queryInfo',
+        role: [config.ROLE.root, config.ROLE.user, config.ROLE.anonymous],
+        controller: 'posts.queryInfo'
+      },
+      {
+        match: `${config.apiPath.posts}`,
+        type: 'post',
+        name: 'posts.create',
+        role: [config.ROLE.root, config.ROLE.user],
+        controller: 'posts.create'
+      },
+      {
+        match: `${config.apiPath.posts}/:id`,
+        type: 'put',
+        name: 'posts.modifyInfo',
+        role: [config.ROLE.root, config.ROLE.user],
+        controller: 'posts.modifyInfo'
+      },
+      {
+        match: `${config.apiPath.posts}/:id`,
+        type: 'delete',
+        name: 'posts.del',
+        role: [config.ROLE.root, config.ROLE.user],
+        controller: 'posts.del'
+      },
+      {
+        match: `${config.apiPath.posts}/:id/pv`,
+        type: 'get',
+        name: 'posts.pv',
+        role: [config.ROLE.root, config.ROLE.user, config.ROLE.anonymous],
+        controller: 'posts.pv'
+      },
+      {
+        match: `${config.apiPath.posts}/:id/favorite`,
+        type: 'get',
+        name: 'posts.favorite',
+        role: [config.ROLE.root, config.ROLE.user],
+        controller: 'posts.favorite'
+      },
+      {
+        match: `${config.apiPath.posts}/search`,
+        type: 'get',
+        name: 'posts.search',
+        role: [config.ROLE.root, config.ROLE.user, config.ROLE.anonymous],
+        controller: 'posts.search'
+      },
+      /**
+       * 用户
+       */
+      {
+        match: `${config.apiPath.user}/login`,
+        type: 'post',
+        role: [config.ROLE.root, config.ROLE.user, config.ROLE.anonymous],
+        name: 'user.login',
+        controller: 'user.login'
+      },
+      {
+        match: `${config.apiPath.user}/logout`,
+        type: 'post',
+        role: [config.ROLE.root, config.ROLE.user],
+        name: 'user.logout',
+        controller: 'user.logout'
+      },
+      {
+        match: `${config.apiPath.user}/register`,
+        type: 'post',
+        name: 'user.register',
+        role: [config.ROLE.root, config.ROLE.user, config.ROLE.anonymous],
+        controller: 'user.register'
+      },
+      {
+        match: `${config.apiPath.user}`,
+        type: 'put',
+        role: [config.ROLE.root, config.ROLE.user],
+        name: 'user.modifyInfo',
+        controller: 'user.modifyInfo'
+      },
+      /**
+       * 分类
+       */
+      {
+        match: `${config.apiPath.categories}`,
+        type: 'get',
+        name: 'categories.queryList',
+        role: [config.ROLE.root, config.ROLE.user, config.ROLE.anonymous],
+        controller: 'categories.queryList'
+      },
+      {
+        match: `${config.apiPath.categories}/:id`,
+        type: 'get',
+        role: [config.ROLE.root],
+        name: 'categories.queryInfo',
+        controller: 'categories.queryInfo'
+      },
+      {
+        match: `${config.apiPath.categories}`,
+        type: 'post',
+        name: 'categories.create',
+        role: [config.ROLE.root],
+        controller: 'categories.create'
+      },
+      {
+        match: `${config.apiPath.categories}/:id`,
+        type: 'put',
+        name: 'categories.modifyInfo',
+        role: [config.ROLE.root],
+        controller: 'categories.modifyInfo'
+      },
+      {
+        match: `${config.apiPath.categories}/:id`,
+        type: 'delete',
+        name: 'categories.del',
+        role: [config.ROLE.root],
+        controller: 'categories.del'
+      },
+    ] 
   }
   // add your user config here
   const userConfig = {
