@@ -43,6 +43,11 @@ class LoginService extends Service {
         }
         return data
     }
+    logout() {
+        const { ctx } = this
+        console.log(ctx)
+        return ctx.verifyToken()
+    }
 }
 
 module.exports = LoginService

@@ -2,7 +2,7 @@
 
 module.exports = {
     get token() {
-        return this.cookie.get('token', { signed: false })
+        return this.cookies.get('token', { signed: false })
     },
     createToken(data) {
         const { app } = this
@@ -32,7 +32,7 @@ module.exports = {
             let data = app.jwt.verify(this.token, app.config.jwt.secret)
             return {
                 status: true,
-                ...data.role
+                ...data
             }
         } catch (err) {
             return {
