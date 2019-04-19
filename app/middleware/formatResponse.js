@@ -1,7 +1,10 @@
 module.exports = options => {
     return async function formatResponse(ctx, next) {
         try {
+            console.log('format try before next')
             await next()
+            console.log('format try after next')
+            console.log(ctx.body)
             let { body: { msg, ...data } } = ctx
             if(Object.keys(data).length === 0) {
                 data = ''
@@ -11,6 +14,9 @@ module.exports = options => {
                 data
             }
         } catch (err) {
+            console.log('format err')
+            console.log(err)
+            console.log(ctx)
             if(err.status === 422) {
                 ctx.status = 400
                 ctx.body = {

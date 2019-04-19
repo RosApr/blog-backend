@@ -8,9 +8,9 @@ module.exports = app => {
   // const { apiPath } = app.config;
   const auth = app.middleware.auth()
   router.get('/', controller.home.index);
-  app.config.auth.pathsConfig.forEach(path => (
-    router[path.type](path.name, path.match, auth, path.controller)
-  ))
+  app.config.auth.pathsConfig.forEach(({type, name, match, controller}) => {
+    return router[type](name, match, auth, controller)
+  })
   // /**
   //  * 文章
   //  */

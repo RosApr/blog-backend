@@ -43,9 +43,18 @@ class LoginController extends baseController {
         this.success(401, {msg: '权限不足'})
         
     }
-    async modifyInfo() {
-        const { ctx } = this
-        
+    modifyInfo() {
+        const { ctx, service } = this
+        const rule = {
+            account: 'string',
+            nickname: 'string',
+            password: 'password'
+        }
+        ctx.validate(rule)
+        console.log('modifyInfo controller',ctx.request.body)
+        // const res = await service.user.modifyInfo(ctx.request.body)
+        // console.log(res)
+        this.success()
     }
 }
 

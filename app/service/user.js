@@ -18,6 +18,14 @@ class LoginService extends Service {
             msg: '账号或密码错误'
         }
     }
+    modifyInfo({ account, nickname, password}) {
+        // const sql = `
+        //     SELECT * FROM user WHERE account = '${account}'
+        // `
+        // const res = await app.mysql.query(sql)
+        console.log(res)
+        return {}
+    }
     async register({account, password, nickname}) {
         const { app } = this
         const _password = app.translatePwdBySha1(password)
