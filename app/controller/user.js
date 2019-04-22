@@ -17,9 +17,9 @@ class LoginController extends baseController {
         if(!msg) {
             console.log(data)
             ctx.createToken(data)
-            return this.success(200, {...data, msg})
+            return this.success({...data, msg}, 200)
         }         
-        this.success(400, {...data, msg})
+        this.success({msg}, 400)
     }
     async register() {
         const { ctx, service } = this
@@ -29,21 +29,14 @@ class LoginController extends baseController {
             nickname: 'string'
         }
         ctx.validate(rule)
-        const res = await service.user.register(ctx.request.body)
-        this.success()
-    }
-    logout() {
-        const { ctx } = this
-        const { status } = ctx.verifyToken()
-        
-        if(status) {
-            ctx.delToken()
-            return this.success(200, {})
+        const {msg, ...data} = await service.user.register(ctx.request.body)
+        if(!msg) {
+            ctx.createToken(data)
+            return this.success({...data, msg}, 200)
         }
-        this.success(401, {msg: '权限不足'})
-        
+        this.success({msg}, 400)
     }
-    modifyInfo() {
+    async modifyInfo() {
         const { ctx, service } = this
         const rule = {
             account: 'string',
@@ -52,9 +45,26 @@ class LoginController extends baseController {
         }
         ctx.validate(rule)
         console.log('modifyInfo controller',ctx.request.body)
-        // const res = await service.user.modifyInfo(ctx.request.body)
-        // console.log(res)
-        this.success()
+        const {msg, ...data} = await service.user.modifyInfo(ctx.request.body)
+        console.log(data)
+        if(!msg) {
+            ctx.createToken(data)
+            this.success(data)
+        } else {
+            this.success({msg}, 404)
+        }
+        
+    }
+    logout() {
+        const { ctx } = this
+        const { status } = ctx.verifyToken()
+        
+        if(status) {
+            ctx.delToken()
+            return this.success()
+        }
+        this.success({msg: '权限不足'}, 401)
+        
     }
 }
 
