@@ -4,6 +4,21 @@ module.exports = {
     get token() {
         return this.cookies.get('token', { signed: false })
     },
+    get verifyTokenResult() {
+        const { app } = this
+        try {
+            let data = app.jwt.verify(this.token, app.config.jwt.secret)
+            return {
+                status: true,
+                ...data
+            }
+        } catch (err) {
+            return {
+                status: false,
+                role: app.config.ROLE.anonymous
+            }
+        }
+    },
     createToken(data) {
         const { app } = this
         const token = app.jwt.sign(data, app.config.jwt.secret)
@@ -16,8 +31,8 @@ module.exports = {
         })
     },
     isUserHasCurrRouteAuth(currRouteRoleArray = []) {
-        const currUserRole = this.verifyToken()['role']
-        return currRouteRoleArray.includes(currUserRole)
+        const { role } = this.verifyTokenResult
+        return currRouteRoleArray.includes(role)
     },
     currRouteAuth(currRouteName = '') {
         const { app: { config: {auth: { pathsConfig }}}} = this

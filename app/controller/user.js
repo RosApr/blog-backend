@@ -57,7 +57,7 @@ class LoginController extends baseController {
     }
     logout() {
         const { ctx } = this
-        const { status } = ctx.verifyToken()
+        const { status } = ctx.verifyTokenResult
         
         if(status) {
             ctx.delToken()

@@ -10,8 +10,8 @@ class PostsController extends baseController {
   }
   async create() {
     const { ctx, service, ctx: { request: { body: postDetail }}} = this
-    const validateData = ctx.verifyToken()
-    if(!validateData.status) {
+    const { status } = ctx.verifyTokenResult
+    if(!status) {
       return ctx.body = {
         msg: 'error'
       }

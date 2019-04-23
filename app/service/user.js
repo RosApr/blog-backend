@@ -74,7 +74,7 @@ class LoginService extends Service {
     logout() {
         const { ctx } = this
         console.log(ctx)
-        return ctx.verifyToken()
+        return ctx.verifyTokenResult
     }
 }
 
