@@ -5,8 +5,17 @@ const baseController = require('../core/base_controller');
 class PostsController extends baseController {
   async queryList() {
     const { ctx, service, ctx: { query: listConfig} } = this;
-    const postList = await service.posts.queryList(listConfig)
-    ctx.body = postList
+    let formatParams = {}
+    for (let [key, value] of Object.entries(listConfig)) {
+      formatParams[key] = Number(value)
+    }
+    const rule = {
+      current: 'number',
+      pageSize: 'number'
+    }
+    ctx.validate(rule, formatParams)
+    const postList = await service.posts.queryList(formatParams)
+    this.success(postList)
   }
   async create() {
     const { ctx, service, ctx: { request: { body: postDetail }}} = this

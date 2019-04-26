@@ -1,9 +1,18 @@
 const Service = require('egg').Service
 class PostService extends Service {
-    async queryList({size, page} = {}) {
+    async queryList({pageSize, current} = {}) {
         const { app } = this
         const itemsSql = `
-            SELECT * FROM post LIMIT ${size} OFFSET ${size * (page - 1)};
+            SELECT
+             p.id,
+             p.title,
+             p.date,
+             user.nickname,
+             p.content,
+             p.pv,
+             category.name FROM post AS p
+             left join user on p.owner_id = user.id
+             left join category on p.category = category.id ORDER BY p.date DESC LIMIT ${pageSize} OFFSET ${pageSize * (current - 1)};
         `
         const totalSql = `
             SELECT COUNT(*) as total FROM post;
