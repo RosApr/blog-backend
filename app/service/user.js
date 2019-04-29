@@ -1,12 +1,12 @@
-const Service = require('egg').Service
-class LoginService extends Service {
+const baseService = require('../core/base_service');
+class LoginService extends baseService {
     async login({account, password}) {
         const { app } = this
         const _password = app.translatePwdBySha1(password)
         const sql = `
             SELECT id, account, nickname, role FROM user WHERE account = '${account}' AND pwd = '${_password}';
         `
-        const res = await app.mysql.query(sql)
+        const res = await this.db.query(sql)
         if(res[0]) {
             return {
                 ...res[0],
@@ -26,10 +26,10 @@ class LoginService extends Service {
         const modifyInfoSql = `
             UPDATE user SET nickname='${nickname}', pwd='${_password}' WHERE account='${account}';
         `
-        const isRegisteredUser = await app.mysql.query(isRegisteredUserSql)
+        const isRegisteredUser = await this.db.query(isRegisteredUserSql)
         if(isRegisteredUser.length > 0) {
             // 存在匹配用户
-            await app.mysql.query(modifyInfoSql)
+            await this.db.query(modifyInfoSql)
             return {
                 id: isRegisteredUser[0]['id'],
                 nickname,
@@ -54,10 +54,10 @@ class LoginService extends Service {
         const insertNewUserSql = `
             INSERT INTO user(account, pwd, nickname, role) VALUES('${account}', '${_password}', '${nickname}', '${app.config.ROLE.user}');
         `
-        const isUserNameExisted = await app.mysql.query(isAccountUniqueSql)
+        const isUserNameExisted = await this.db.query(isAccountUniqueSql)
         console.log('isUserNameExisted', isUserNameExisted)
         if(isUserNameExisted.length === 0) {
-            let res = await app.mysql.query(insertNewUserSql)
+            let res = await this.db.query(insertNewUserSql)
             console.log('insertNewUserSql', res)
             return {
                 id: res['insertId'],

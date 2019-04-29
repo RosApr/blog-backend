@@ -29,9 +29,13 @@ class PostsController extends baseController {
     ctx.body = publishRes
   }
   async queryInfo() {
-    const { ctx, service, ctx: { params:{ id } } } = this
-    const postsInfo = await service.posts.queryInfo(id) 
-    ctx.body = postsInfo
+    const { service, ctx: { params: { id } } } = this
+    const { msg, ...data } = await service.posts.queryInfo(id) 
+    if(msg) {
+      this.success({msg}, 404)
+    } else {
+      this.success({msg, ...data})
+    }
   }
   async search() {
     
@@ -40,10 +44,14 @@ class PostsController extends baseController {
 
   }
   async del() {
-
+    const { service, ctx: {params: { id }} } = this
+    const { msg } = await service.posts.del(id)
+    this.success({msg})
   }
   async pv() {
-
+    const { service, ctx: {params: { id }} } = this
+    const { msg } = service.posts.pv(id)
+    this.success({msg})
   }
   async favorite() {
 
