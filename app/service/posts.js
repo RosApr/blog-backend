@@ -30,16 +30,25 @@ class PostService extends baseService {
     async create(postsData) {
         const insertPostSql = `
             INSERT INTO post(title, detail, date, owner_id)
-             VALUES('${postsData.title}','${postsData.content}',curdate(),'${postsData.id}');
+             VALUES('${postsData.title}','${postsData.content}',now(),'${postsData.id}');
         `
         const res = await this.db.query(insertPostSql)
         return {
             msg: ''
         }
     }
+    async modifyInfo({id, title, content}) {
+        const modifyPostSql = `
+            UPDATE post SET title='${title}', content='${content}', date=now() WHERE id='${id}';
+        `
+        await this.db.query(modifyPostSql)
+        return {
+            msg: ''
+        }
+    }
     async queryInfo(postId = '') {
         const queryPostsInfoSql = `
-            SELECT post.title, post.pv, post.content, post.date, user.nickname FROM post LEFT JOIN user ON user.id = post.owner_id WHERE post.id = ${postId};
+            SELECT post.title, post.id, post.pv, post.content, post.date, user.nickname FROM post LEFT JOIN user ON user.id = post.owner_id WHERE post.id = ${postId};
         `
         const res = await this.db.query(queryPostsInfoSql)
         console.log('queryInfo res', res)

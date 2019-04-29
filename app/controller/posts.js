@@ -41,7 +41,15 @@ class PostsController extends baseController {
     
   }
   async modifyInfo() {
-
+    const { service, ctx, ctx: {request: { body }}} = this
+    const rule = {
+      id: 'number',
+      title: 'string',
+      content: 'string'
+    }
+    ctx.validate(rule)
+    const res = await service.posts.modifyInfo(body)
+    this.success(res)
   }
   async del() {
     const { service, ctx: {params: { id }} } = this
