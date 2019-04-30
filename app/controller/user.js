@@ -64,7 +64,34 @@ class LoginController extends baseController {
             return this.success()
         }
         this.success({msg: '权限不足'}, 401)
-        
+    }
+    async queryUserList() {
+        const { service, ctx, ctx: {request: { query }}} = this
+        const formatParams = ctx.helper.formatRequestQueryToNumber(query)
+        console.log(query)
+        const rule = {
+            current: 'number',
+            pageSize: 'number'
+        }
+        ctx.validate(rule, formatParams)
+        const userList = await service.user.queryUserList(formatParams)
+        this.success(userList)
+    }
+    async resetPwd() {
+        const { service, ctx, ctx: { request: { body }}} = this
+        const formatParams = ctx.helper.formatRequestQueryToNumber(body)
+        console.log(body)
+        const rule = {
+            id: 'number'
+        }
+        console.log('resetpwd', formatParams)
+        ctx.validate(rule, formatParams)
+        const { msg } = await service.user.resetPwd(formatParams)
+        if(!msg) {
+            this.success({msg})
+        } else {
+            this.success({msg}, 404)
+        }
     }
 }
 

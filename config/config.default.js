@@ -150,6 +150,20 @@ module.exports = appInfo => {
         name: 'user.modifyInfo',
         controller: 'user.modifyInfo'
       },
+      {
+        match: `${config.apiPath.user}/list`,
+        type: 'get',
+        role: [config.ROLE.root],
+        name: 'user.queryUserList',
+        controller: 'user.queryUserList'
+      },
+      {
+        match: `${config.apiPath.user}/resetPwd`,
+        type: 'put',
+        role: [config.ROLE.root],
+        name: 'user.resetPwd',
+        controller: 'user.resetPwd'
+      },
       /**
        * 分类
        */

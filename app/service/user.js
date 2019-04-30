@@ -76,6 +76,47 @@ class LoginService extends baseService {
         console.log(ctx)
         return ctx.verifyTokenResult
     }
+    async queryUserList({current, pageSize} = {}) {
+        const itemsSql = `
+            SELECT user.id,
+            user.nickname,
+            user.date,
+            count(post.id) as count
+            FROM user LEFT JOIN post ON user.id = post.owner_id GROUP BY user.id ORDER BY count DESC LIMIT ${pageSize} OFFSET ${(current - 1) * pageSize} 
+        `
+        const totalSql = `
+            SELECT COUNT(*) as total FROM user;
+        `
+        const items = await this.db.query(itemsSql)
+        const total = await this.db.query(totalSql)
+        return {
+            items: JSON.parse(JSON.stringify(items)),
+            total: total[0].total,
+            msg: ''
+        }
+    }
+    async resetPwd({ id }) {
+        const { app } = this
+        const _password = app.translatePwdBySha1('111111')
+
+        const isExistedUserSql = `
+            SELECT * FROM user WHERE id='${id}';
+        `
+        const resetPwdSql = `
+            UPDATE user SET pwd='${_password}' WHERE id='${id}';
+        `
+        const isExistedUser = await this.db.query(isExistedUserSql)
+        if(isExistedUser.length > 0) {
+            await this.db.query(resetPwdSql)
+            return {
+                msg: ''
+            }
+        } else {
+            return {
+                msg: '用户不存在'
+            }
+        }
+    }
 }
 
 module.exports = LoginService

@@ -5,10 +5,7 @@ const baseController = require('../core/base_controller');
 class Categories extends baseController {
     async queryList() {
         const { ctx, service, ctx: { query: listConfig} } = this;
-        let formatParams = {}
-        for (let [key, value] of Object.entries(listConfig)) {
-            formatParams[key] = Number(value)
-        }
+        const formatParams = ctx.helper.formatRequestQueryToNumber(listConfig)
         const rule = {
             current: 'number',
             pageSize: 'number'
