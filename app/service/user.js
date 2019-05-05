@@ -81,6 +81,7 @@ class LoginService extends baseService {
             SELECT user.id,
             user.nickname,
             user.date,
+            user.account,
             count(post.id) as count
             FROM user LEFT JOIN post ON user.id = post.owner_id GROUP BY user.id ORDER BY count DESC LIMIT ${pageSize} OFFSET ${(current - 1) * pageSize} 
         `
