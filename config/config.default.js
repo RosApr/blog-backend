@@ -106,13 +106,6 @@ module.exports = appInfo => {
         controller: 'posts.pv'
       },
       {
-        match: `${config.apiPath.posts}/:id/favorite`,
-        type: 'get',
-        name: 'posts.favorite',
-        role: [config.ROLE.root, config.ROLE.user],
-        controller: 'posts.favorite'
-      },
-      {
         match: `${config.apiPath.posts}/search`,
         type: 'get',
         name: 'posts.search',
@@ -163,6 +156,20 @@ module.exports = appInfo => {
         role: [config.ROLE.root],
         name: 'user.resetPwd',
         controller: 'user.resetPwd'
+      },
+      {
+        match: `${config.apiPath.user}/star`,
+        type: 'get',
+        name: 'user.queryStarConfig',
+        role: [config.ROLE.root, config.ROLE.user],
+        controller: 'user.queryStarConfig'
+      },
+      {
+        match: `${config.apiPath.user}/star`,
+        type: 'post',
+        name: 'user.star',
+        role: [config.ROLE.root, config.ROLE.user],
+        controller: 'user.star'
       },
       /**
        * 分类

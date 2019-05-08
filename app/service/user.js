@@ -118,6 +118,43 @@ class LoginService extends baseService {
             }
         }
     }
+    async queryStarConfig() {
+        const userId = this.ctx.verifyTokenResult.id
+        const starTotalSql = `
+            SELECT COUNT(f.post_id) AS total FROM favorite f WHERE f.user_id = '${userId}'
+        `
+        const starListSql = `
+            SELECT f.post_id AS id FROM favorite f WHERE f.user_id = '${userId}'
+        `
+        const total = await this.db.query(starTotalSql)
+        const items = await this.db.query(starListSql)
+        return {
+            msg: '',
+            total: total[0]['total'],
+            items: JSON.parse(JSON.stringify(items)).map(item => item.id)
+        }
+    }
+    async star({postId, status}) {
+        const userId = this.ctx.verifyTokenResult.id
+        const addStarSql = `
+            INSERT INTO favorite(post_id, user_id) VALUES('${postId}', '${userId}');
+        `
+        const delStarSql = `
+            DELETE FROM favorite WHERE post_id='${postId}' AND user_id='${userId}'
+        `
+        const updatePostStarConutSql = `
+            UPDATE post SET star=(GREATEST(0, (star ${status === 1 ? '+ 1' : '- 1'}))) WHERE id='${postId}'
+        `
+        if(status === 1) {
+            await this.db.query(addStarSql)
+        } else {
+            await this.db.query(delStarSql)
+        }
+        await this.db.query(updatePostStarConutSql)
+        return {
+            msg: ''
+        }
+    }
 }
 
 module.exports = LoginService

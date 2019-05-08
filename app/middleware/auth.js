@@ -5,7 +5,7 @@ module.exports = options => {
         console.log('auth before next', isUserHasCurrRouteAuth)
         if(!isUserHasCurrRouteAuth) {
             ctx.body = {
-                msg: ''
+                msg: '权限不足'
             }
             ctx.status = 401
         }

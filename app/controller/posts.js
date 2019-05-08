@@ -8,22 +8,38 @@ class PostsController extends baseController {
     const formatParams = ctx.helper.formatRequestQueryToNumber(listConfig)
     const rule = {
       current: 'number',
-      pageSize: 'number'
+      pageSize: 'number',
+      isOwn: {
+        type: 'number',
+        required: false
+      },
+      categoryId: {
+        type: 'number',
+        required: false
+      },
+      star: {
+        type: 'number',
+        required: false
+      }
     }
     ctx.validate(rule, formatParams)
     const postList = await service.posts.queryList(formatParams)
-    this.success(postList)
+    if(postList.msg) {
+      return this.success({msg: postList.msg}, 401)
+    }
+    return this.success(postList)
   }
   async create() {
     const { ctx, service, ctx: { request: { body: postDetail }}} = this
-    const { status } = ctx.verifyTokenResult
-    if(!status) {
-      return ctx.body = {
-        msg: 'error'
-      }
+    const rule = {
+      title: 'string',
+      content: 'string',
+      categoryId: 'number'
     }
-    const publishRes = await service.posts.create({...postDetail, ...validateData.data})
-    ctx.body = publishRes
+    ctx.validate(rule)
+    console.log('ctx.verifyTokenResult', ctx.verifyTokenResult)
+    await service.posts.create({...postDetail, id: ctx.verifyTokenResult.id})
+    return this.success({msg: ''})
   }
   async queryInfo() {
     const { service, ctx: { params: { id } } } = this
@@ -57,9 +73,6 @@ class PostsController extends baseController {
     const { service, ctx: {params: { id }} } = this
     const { msg } = service.posts.pv(id)
     this.success({msg})
-  }
-  async favorite() {
-
   }
 }
 

@@ -57,13 +57,8 @@ class LoginController extends baseController {
     }
     logout() {
         const { ctx } = this
-        const { status } = ctx.verifyTokenResult
-        
-        if(status) {
-            ctx.delToken()
-            return this.success()
-        }
-        this.success({msg: '权限不足'}, 401)
+        ctx.delToken()
+        return this.success()
     }
     async queryUserList() {
         const { service, ctx, ctx: {request: { query }}} = this
@@ -92,6 +87,23 @@ class LoginController extends baseController {
         } else {
             this.success({msg}, 404)
         }
+    }
+    async queryStarConfig() {
+        const { service } = this
+        const res = await service.user.queryStarConfig()
+        return this.success(res)
+    }
+    async star() {
+        const { service, ctx, ctx: {request: { body }} } = this
+        const formatParams = ctx.helper.formatRequestQueryToNumber(body)
+        const rule = {
+            postId: 'number',
+            status: 'number'
+        }
+        ctx.validate(rule, formatParams)
+        const res = await service.user.star(formatParams)
+        return this.success()
+
     }
 }
 
