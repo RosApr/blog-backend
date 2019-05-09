@@ -68,7 +68,6 @@ comment
 管理员能做的事情
 
 - 登录         -no auth
-- 修改用户信息
 - 操作文章分类
 - 获取类目列表  -no auth
 - 获取文章列表  -no auth

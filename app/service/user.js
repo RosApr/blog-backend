@@ -78,12 +78,12 @@ class LoginService extends baseService {
     }
     async queryUserList({current, pageSize} = {}) {
         const itemsSql = `
-            SELECT user.id,
-            user.nickname,
-            user.date,
-            user.account,
-            count(post.id) as count
-            FROM user LEFT JOIN post ON user.id = post.owner_id GROUP BY user.id ORDER BY count DESC LIMIT ${pageSize} OFFSET ${(current - 1) * pageSize} 
+            SELECT u.id,
+            u.nickname,
+            u.date,
+            u.account,
+            COUNT(p.id) as count
+            FROM user u LEFT JOIN post p ON u.id = p.owner_id WHERE u.role !='root' GROUP BY u.id ORDER BY count DESC LIMIT ${pageSize} OFFSET ${(current - 1) * pageSize} 
         `
         const totalSql = `
             SELECT COUNT(*) as total FROM user;
