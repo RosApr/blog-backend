@@ -8,27 +8,29 @@ class PostService extends baseService {
             SELECT
             p.id,
             p.title,
-            p.date,
+            p.updated_at as date,
             u.nickname,
             p.content,
             p.pv,
             p.star,
             c.name AS category FROM post AS p
-            left join user AS u on p.owner_id = u.id
-            left join category AS c on p.category = c.id 
-            left join favorite f on p.id = f.post_id
+            left join user AS u on p.user_id = u.id
+            left join category AS c on p.category_id = c.id 
+            {{#if star}}
+                left join favorite f on p.id = f.post_id
+            {{/if}}
             {{#where}}
-                {{#if categoryId}}
-                    p.category='{{categoryId}}'
-                {{/if}}
                 {{#if star}}
-                    AND f.user_id='{{userId}}'
+                    f.user_id='{{userId}}'
+                {{/if}}
+                {{#if categoryId}}
+                    AND p.category_id='{{categoryId}}'
                 {{/if}}
                 {{#if isOwn}}
-                    AND p.owner_id='{{userId}}'
+                    AND p.user_id='{{userId}}'
                 {{/if}}
             {{/where}}
-             ORDER BY p.date DESC LIMIT {{pageSize}} OFFSET ${pageSize * (current - 1)}
+             ORDER BY p.updated_at DESC LIMIT {{pageSize}} OFFSET ${pageSize * (current - 1)}
         `
         const _totalSql = `
         SELECT COUNT(*) AS
@@ -37,19 +39,24 @@ class PostService extends baseService {
             left join favorite f on p.id = f.post_id
         {{/if}}
         {{#where}}
+            {{#if star}}
+                f.user_id='{{userId}}'
+            {{/if}}
             {{#if categoryId}}
-                p.category='{{categoryId}}'
+                AND p.category_id='{{categoryId}}'
             {{/if}}
             {{#if star}}
                 AND f.user_id='{{userId}}'
             {{/if}}
             {{#if isOwn}}
-                AND p.owner_id='{{userId}}'
+                AND p.user_id='{{userId}}'
             {{/if}}
         {{/where}}
         `
         const _isql = ctx.helper.compileTempl(_itemsql, {pageSize, current, isOwn, categoryId, star, userId})
         const _tsql = ctx.helper.compileTempl(_totalSql, {isOwn, categoryId, star, userId})
+        console.log('list sql', _isql)
+        console.log('list userId', userId)
         if(isOwn == 1 && !userId) {
             return {
                 msg: '需要登录'
@@ -66,37 +73,47 @@ class PostService extends baseService {
             msg: ''
         }
     }
-    async create(postsData) {
-        const insertPostSql = `
-            INSERT INTO post(title, content, date, owner_id, category)
-             VALUES('${postsData.title}', '${postsData.content}', now(), '${postsData.id}', ${postsData.categoryId});
-        `
-        await this.db.query(insertPostSql)
+    async create({title, content, id: user_id, categoryId}) {
+        // const insertPostSql = `
+        //     INSERT INTO post(title, content, user_id, category_id)
+        //      VALUES('${postsData.title}', '${postsData.content}', '${postsData.id}', ${postsData.categoryId});
+        // `
+        await this.db.insert('post', {
+            title: title,
+            content: content,
+            user_id: user_id,
+            category_id: categoryId
+        })
         return {
             msg: ''
         }
     }
     async modifyInfo({id, title, content}) {
-        const modifyPostSql = `
-            UPDATE post SET title='${title}', content='${content}', date=now() WHERE id='${id}';
-        `
-        await this.db.query(modifyPostSql)
+        // const modifyPostSql = `
+        //     UPDATE post SET title='${title}', content='${content}', updated_at=now() WHERE id='${id}';
+        // `
+        await this.db.update('post', {
+            id,
+            title,
+            content,
+            updated_at: this.db.literals.now,
+        })
         return {
             msg: ''
         }
     }
-    async queryInfo(postId = '') {
+    async queryInfo(id = '') {
         const queryPostsInfoSql = `
             SELECT p.title,
             p.id,
             p.pv,
             p.content,
-            p.date,
-            p.category AS categoryId,
+            p.updated_at as date,
+            p.category_id AS categoryId,
             ${this.ctx.verifyTokenResult.status ? 'IF(f.user_id, 1, 0) AS star,' : ''}
             u.nickname 
-            FROM post p LEFT JOIN user u ON u.id = p.owner_id 
-            ${this.ctx.verifyTokenResult.status ? `LEFT JOIN favorite f on p.id = f.post_id AND f.user_id = '${this.ctx.verifyTokenResult.id}'` : ''} WHERE p.id = ${postId} ${this.ctx.verifyTokenResult.status ? 'GROUP BY p.id' : ''};
+            FROM post p LEFT JOIN user u ON u.id = p.user_id 
+            ${this.ctx.verifyTokenResult.status ? `LEFT JOIN favorite f on p.id = f.post_id AND f.user_id = '${this.ctx.verifyTokenResult.id}'` : ''} WHERE p.id = ${id} ${this.ctx.verifyTokenResult.status ? 'GROUP BY p.id' : ''};
         `
         console.log('this.ctx.verifyTokenResult.status', this.ctx.verifyTokenResult.status)
         const res = await this.db.query(queryPostsInfoSql)
@@ -112,19 +129,24 @@ class PostService extends baseService {
             }
         }
     }
-    async pv(postId = '') {
-        const isExistBlogSql = `
-            SELECT * FROM post WHERE post.id = '${postId}';
-        `
+    async pv(id = '') {
+        // const isExistBlogSql = `
+        //     SELECT * FROM post WHERE post.id = '${id}';
+        // `
         
-        const isExistBlog = await this.db.query(isExistBlogSql)
+        const isExistBlog = await this.db.get('post', {
+            id
+        })
         console.log('pv', isExistBlog)
-        if(isExistBlog.length > 0) {
-            let pv = +isExistBlog[0]['pv'] + 1
-            let addBlogPvSql = `
-                UPDATE post SET pv = ${pv} WHERE id = '${postId}'
-            `
-            await this.db.query(addBlogPvSql)
+        if(isExistBlog) {
+            let pv = +isExistBlog['pv'] + 1
+            // let addBlogPvSql = `
+            //     UPDATE post SET pv = ${pv} WHERE id = '${id}'
+            // `
+            await this.db.update('post', {
+                id,
+                pv
+            })
             return {
                 msg: ''
             }
@@ -134,17 +156,19 @@ class PostService extends baseService {
             }
         }
     }
-    async del(postId = '') {
-        const isExistBlogSql = `
-            SELECT * FROM post WHERE id = '${postId}';
-        `
-        const isExistBlog = await this.db.query(isExistBlogSql)
+    async del(id = '') {
+        // const isExistBlogSql = `
+        //     SELECT * FROM post WHERE id = '${id}';
+        // `
+        const isExistBlog = await this.db.get('post', {
+            id
+        })
         console.log('del', isExistBlog)
-        if(isExistBlog.length > 0) {
-            let delBlogSql = `
-                DELETE FROM post WHERE id = '${postId}'
-            `
-            await this.db.query(delBlogSql)
+        if(isExistBlog) {
+            // let delBlogSql = `
+            //     DELETE FROM post WHERE id = '${id}'
+            // `
+            await this.db.delete('post', {id})
             return {
                 msg: ''
             }
