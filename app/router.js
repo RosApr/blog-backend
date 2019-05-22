@@ -4,13 +4,16 @@
  * @param {Egg.Application} app - egg application
  */
 module.exports = app => {
-  const { router, controller } = app;
+  const { router, io } = app;
   // const { apiPath } = app.config;
   const auth = app.middleware.auth()
-  router.get('/', controller.home.index);
+  // router.get('/', controller.home.index);
   app.config.auth.pathsConfig.forEach(({type, name, match, controller}) => {
     return router[type](name, match, auth, controller)
   })
+  // io.of('/').route('chat', app.io.controller.chat.index);
+  io.of('/chat').route('online', app.io.controller.chat.online);
+  io.of('/chat').route('chat', app.io.controller.chat.chat);
   // /**
   //  * 文章
   //  */

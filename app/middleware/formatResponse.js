@@ -5,6 +5,9 @@ module.exports = options => {
             await next()
             console.log('format try after next')
             console.log(ctx.body)
+            if(!ctx.body) return ctx.body = {
+                msg: ''
+            }
             let { body: { msg='', ...data } } = ctx
             if(Object.keys(data).length === 0) {
                 data = ''

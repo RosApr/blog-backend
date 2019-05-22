@@ -11,27 +11,34 @@ module.exports = appInfo => {
    * @type {Egg.EggAppConfig}
    **/
   const config = {
-    // mysql: {
-    //   client: {
-    //     host: '127.0.0.1',
-    //     port: '3306',
-    //     user: 'root',
-    //     password: '871128',
-    //     database: 'blog_study'
-    //   },
-    //   app: true,
-    //   agent: false
-    // },
-    sequelize: {
-      dialect: 'mysql',
-      host: '127.0.0.1',
-      port: '3306',
-      user: 'root',
-      password: '871128',
-      database: 'blog_study'
+    mysql: {
+      client: {
+        host: '127.0.0.1',
+        port: '3306',
+        user: 'root',
+        password: '871128',
+        database: 'blog_study'
+      },
+      app: true,
+      agent: false
     },
     jwt: {
       secret: '123'
+    },
+    io: {
+      init: {
+        path: '/chat',
+      },
+      namespace: {
+        // '/': {
+        //   connectionMiddleware: [],
+        //   packetMiddleware: [],
+        // },
+        '/chat': {
+          connectionMiddleware: ['calculateOnlinePeopleCount'],
+          packetMiddleware: ['packet'],
+        }
+      },
     },
     // session: {
     //   key: 'user',
